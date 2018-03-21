@@ -5,3 +5,5 @@ https://www.youtube.com/watch?v=D6esTdOLXh4
 -->Python3 (DEFAULT TO PYTHON3)
 -->Django2?(CHANGE SQLITE3 TO MYSQL)
 -->MySQL
+
+Admin Superuser: chonglu2 qwerasdf
