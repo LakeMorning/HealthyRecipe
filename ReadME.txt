@@ -7,3 +7,6 @@ https://www.youtube.com/watch?v=D6esTdOLXh4
 -->MySQL
 
 Admin Superuser: chonglu2 qwerasdf
+
+1)run python manage.py runserver 0.0.0.0:8001
+2)go to http://healthyrecipe.web.engr.illinois.edu:8001/
