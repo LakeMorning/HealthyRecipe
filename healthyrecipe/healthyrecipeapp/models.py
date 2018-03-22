@@ -35,6 +35,7 @@ class Recipe(models.Model):
     calorie = models.IntegerField(null=True)
     prep_time = models.IntegerField(null=True)
     direction = models.TextField(null=True)
+    image_url = models.CharField(null=True, max_length=100)
 
 class Quantity(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
