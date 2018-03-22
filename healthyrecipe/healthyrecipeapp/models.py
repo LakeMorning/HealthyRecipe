@@ -40,7 +40,7 @@ class Recipe(models.Model):
 class Quantity(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    quantity = models.IntegerField(null=True)
+    quantity = models.CharField(null=True, max_length=100)
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
