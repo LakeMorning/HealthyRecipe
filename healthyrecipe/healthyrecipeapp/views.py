@@ -7,7 +7,10 @@ from django.contrib.auth import login, authenticate
 # Create your views here.
 def index(request):
     #return HttpResponse('HELLO THERE')
-    
+    if request.method == 'GET':
+        key_word = request.GET.get('search_box',None)
+        return Sresult(request,key_word)
+
     cursor = connection.cursor()
     
     # insert
@@ -26,13 +29,25 @@ def index(request):
     
     return render(request, 'healthyrecipeapp/index.html', context)
 
+def Sresult(request,key_word):
+    keyword = '%' + keyword + '%'
+    cursor = connection.cursor()
+    cursor.execute("SELECT healthyrecipeapp_recipe.name FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity\
+    WHERE healthyrecipeapp_recipe.name Like '%s' OR (healthyrecipeapp_ingredient.name = '%s'\
+    AND healthyrecipeapp_quantity.id = healthyrecipeapp_reciple.id AND healthyrecipeapp_quantity.id = healthyrecipeapp_ingredient.id)", [keyword,keyword])
+    recipes = cursor.fetchall()
+    context = {
+        'recipes': recipes
+    }
+    return render(request, 'healthyrecipeapp/sresult.html', context)
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             # return HttpResponse(form.cleaned_data['userName'])
             
-            form.save()
+            form.save()  
             
             userName = form.cleaned_data['username']
             raw_password = form.cleaned_data['password1']
