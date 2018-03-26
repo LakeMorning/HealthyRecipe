@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_REDIRECT_URL = 'http://healthyrecipe.web.engr.illinois.edu:8001'
+
 
 # Application definition
 

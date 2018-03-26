@@ -1,0 +1,17 @@
+{% extends 'healthyrecipeapp/layout.html' %}
+
+{% block content %}
+<h2>Sign up</h2>
+<form action="/signup" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <!--<input type="text" name="userName" placeholder="username">-->
+  <!--<input type="password" name="password" placeholder="password">-->
+  <!--<input type="text" name="height" placeholder="height">-->
+  <!--<input type="text" name="weight" placeholder="weight">-->
+  <!--<input type="text" name="age" placeholder="age">-->
+  <!--<input type="text" name="gender" placeholder="gender">-->
+  <!--<input type="text" name="exerciseFreq" placeholder="exerciseFreq">-->
+  <input type="submit" value="OK">
+</form>
+{% endblock %}
