@@ -1,0 +1,9 @@
+{% extends 'healthyrecipeapp/layout.html' %}
+
+{% block content %}
+<ul class="collection">
+  {% for recipe in recipes %}
+    <li class="collection-item">{{recipe}}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
