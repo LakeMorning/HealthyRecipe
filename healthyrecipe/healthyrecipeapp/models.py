@@ -47,3 +47,7 @@ class Review(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     rating = models.IntegerField(null=True)
     content = models.TextField(null=True)
+
+class Meal(models.Model):
+    user_id = models.CharField(null=True, max_length=100)
+    recipe_id = models.CharField(null=True, max_length=100)

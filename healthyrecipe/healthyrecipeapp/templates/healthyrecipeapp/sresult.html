@@ -3,7 +3,16 @@
 {% block content %}
 <ul class="collection">
   {% for recipe in recipes %}
-    <li class="collection-item">{{recipe}}</li>
+    <li class="collection-item">{{recipe}}
+        <!-- <form action="/signup" method="post"> --> 
+            <!--<button type="button" class="btn btn-default btn-sm">-->
+              <!-- <span class="glyphicon glyphicon-thumbs-up"></span> Like -->
+                <form action="/sresult" method="get">
+                 <input type="submit" class="btn" value={{ forloop.counter }} name="mybtn">
+                </form>
+            <!--</button>-->
+        <!-- </form>-->
+    </li>
   {% endfor %}
 </ul>
 {% endblock %}

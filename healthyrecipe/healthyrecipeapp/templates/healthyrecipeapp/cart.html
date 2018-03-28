@@ -1,0 +1,14 @@
+{% extends 'healthyrecipeapp/layout.html' %}
+
+{% block content %}
+<ul class="collection">
+  {% for recipe in user_meal %}
+    <li class="collection-item">{{recipe}}
+        <form action="/cart" method="get">
+         <input type="submit" class="btn" value={{ forloop.counter }} name="mybtn">
+        </form>
+    </li>
+  {% endfor %}
+</ul>
+<h5>total calorie is: {{total_calorie}}</h5>
+{% endblock %}
