@@ -10,6 +10,10 @@ def index(request):
     button = request.GET.get('cart')
     if(button):
         return cart(request)
+        
+    button = request.GET.get('profile')
+    if(button):
+        return profile(request)
     
     key_word = request.GET.get('search_box', None)
     if(key_word):
@@ -51,9 +55,12 @@ def cart(request):
     user_meal = cursor.fetchall()
     cursor.execute("SELECT SUM(calorie) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
     total_calorie = cursor.fetchall()[0][0]
+    cursor.execute("SELECT SUM(prep_time) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
+    total_prep_time = cursor.fetchall()[0][0]
     context = {
         'user_meal': user_meal,
-        'total_calorie': total_calorie
+        'total_calorie': total_calorie,
+        'total_prep_time': total_prep_time
     }
     
     transposed = list(zip(*user_meal))
@@ -71,8 +78,14 @@ def cart(request):
         
         cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id IN (SELECT healthyrecipeapp_meal.recipe_id FROM healthyrecipeapp_meal WHERE user_id = %s)", [user_id] )
         user_meal = cursor.fetchall()
+        cursor.execute("SELECT SUM(calorie) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
+        total_calorie = cursor.fetchall()[0][0]
+        cursor.execute("SELECT SUM(prep_time) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
+        total_prep_time = cursor.fetchall()[0][0]
         context = {
-            'user_meal': user_meal
+            'user_meal': user_meal,
+            'total_calorie': total_calorie,
+            'total_prep_time': total_prep_time
         }
     
     return render(request, 'healthyrecipeapp/cart.html', context)
@@ -83,7 +96,8 @@ def sresult(request):
     key_word = '%' + key_word + '%'
     cursor = connection.cursor()
     # return HttpResponse(key_word) 
-    cursor.execute("SELECT DISTINCT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_recipe.name Like %s OR (healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id) GROUP BY healthyrecipeapp_recipe.prep_time", [key_word,okey_word])
+    # cursor.execute("SELECT DISTINCT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_recipe.name Like %s OR (healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id) GROUP BY healthyrecipeapp_recipe.prep_time", [key_word,okey_word])
+    cursor.execute("(SELECT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.name Like %s) UNION (SELECT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id)", [key_word,okey_word])
     recipes = cursor.fetchall()
     recipes = list(zip(*recipes))
     names = []
@@ -116,6 +130,30 @@ def sresult(request):
         # return HttpResponse(recipes[1])
         
     return render(request, 'healthyrecipeapp/sresult.html', context)
+
+def profile(request):
+    cursor = connection.cursor()
+    user_name = request.user.username
+    cursor.execute("SELECT healthyrecipeapp_user.height FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
+    height = cursor.fetchall()[0][0]
+    cursor.execute("SELECT healthyrecipeapp_user.weight FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
+    weight = cursor.fetchall()[0][0]
+    cursor.execute("SELECT healthyrecipeapp_user.age FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
+    age = cursor.fetchall()[0][0]
+    cursor.execute("SELECT healthyrecipeapp_user.exerciseFreq FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
+    exerciseFreq = cursor.fetchall()[0][0]
+    context = {
+        'height': height,
+        'weight': weight,
+        'age': age,
+        'exerciseFreq': exerciseFreq
+    }
+
+    key_word = request.GET.get('updateWeight', None)
+    if(key_word):
+        newWeight = int(key_word)
+        cursor.execute("UPDATE healthyrecipeapp_user SET healthyrecipeapp_user.weight = %s WHERE healthyrecipeapp_user.userName = %s",[newWeight, user_name])
+    return render(request, 'healthyrecipeapp/profile.html', context)
 
 def signup(request):
     if request.method == 'POST':
