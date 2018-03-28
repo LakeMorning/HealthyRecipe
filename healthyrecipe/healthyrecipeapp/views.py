@@ -51,9 +51,12 @@ def cart(request):
     user_meal = cursor.fetchall()
     cursor.execute("SELECT SUM(calorie) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
     total_calorie = cursor.fetchall()[0][0]
+    cursor.execute("SELECT SUM(prep_time) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
+    total_prep_time = cursor.fetchall()[0][0]
     context = {
         'user_meal': user_meal,
         'total_calorie': total_calorie
+        'total_prep_time': total_prep_time
     }
     
     transposed = list(zip(*user_meal))
@@ -71,8 +74,14 @@ def cart(request):
         
         cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id IN (SELECT healthyrecipeapp_meal.recipe_id FROM healthyrecipeapp_meal WHERE user_id = %s)", [user_id] )
         user_meal = cursor.fetchall()
+        cursor.execute("SELECT SUM(calorie) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
+        total_calorie = cursor.fetchall()[0][0]
+        cursor.execute("SELECT SUM(prep_time) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
+        total_prep_time = cursor.fetchall()[0][0]
         context = {
-            'user_meal': user_meal
+            'user_meal': user_meal,
+            'total_calorie': total_calorie
+            'total_prep_time': total_prep_time
         }
     
     return render(request, 'healthyrecipeapp/cart.html', context)
