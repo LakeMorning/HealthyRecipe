@@ -10,3 +10,11 @@ Admin Superuser: chonglu2 qwerasdf
 
 1)run python manage.py runserver 0.0.0.0:8001
 2)go to http://healthyrecipe.web.engr.illinois.edu:8001/
+
+04/02 meeting
+1）还要80个recipe
+2）改search result里的button名字->add
+3）改cart里的button名字->delete
+4）第五个basic functionality：点进菜谱的名字会显示出信息
+5）comments section
+6）ranking：score, user_record
