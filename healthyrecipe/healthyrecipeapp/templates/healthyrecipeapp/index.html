@@ -1,6 +1,7 @@
 {% extends 'healthyrecipeapp/layout.html' %}
 
 {% block content %}
+<h5 id="demo" class ='testcss' onclick="foo()">Let's see if CSS works...</h5>
 <form action="" method="get">
     <input type="submit" class="btn" value="go to cart" name="cart">
 </form>
@@ -11,7 +12,7 @@
 
 <form action="" method="get">
   <input type="text" name = "search_box">
-  <input type="submit"value="Search"/>
+  <input type="submit" value="Search"/>
 </form>
 <h5 class="center-align blue lighten-3">Signed in as: {{request.user.username}}</h5>
 
