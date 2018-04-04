@@ -45,14 +45,19 @@ def index(request):
 def cart(request):
     cursor = connection.cursor()
     user_name = request.user.username
+    # return HttpResponse(user_name)
+    if(user_name is ''):
+        return HttpResponse('not logged in')
+        
+    # user_id = user_id[0][0]
     cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
     user_id = cursor.fetchall()[0][0]
-    if(user_id is None):
-        return HttpResponse('not logged in')
     # cursor.execute("SELECT recipe_id FROM healthyrecipeapp_meal WHERE user_id = %s", [user_id])
     # recipe_ids = cursor.fetchall()
     cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id IN (SELECT healthyrecipeapp_meal.recipe_id FROM healthyrecipeapp_meal WHERE user_id = %s)", [user_id] )
     user_meal = cursor.fetchall()
+    if(len(user_meal) == 0):
+        return HttpResponse('Empty cart! Please begin selecting your meals!')
     cursor.execute("SELECT SUM(calorie) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
     total_calorie = cursor.fetchall()[0][0]
     cursor.execute("SELECT SUM(prep_time) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])

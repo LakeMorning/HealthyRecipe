@@ -1,0 +1,13 @@
+{% extends 'healthyrecipeapp/layout.html' %}
+
+{% block content %}
+<h5>Your height is: {{height}}cm</h5>
+<h5>Your weight is: {{weight}}g</h5>
+<h5>Your age is: {{age}}</h5>
+<h5>Your exercise frequency is: {{exerciseFreq}} times per week</h5>
+
+<form action="/profile" method="get">
+  <input type="text" name = "updateWeight">
+</form>
+<h5>Input your updated weight here</h5>
+{% endblock %}

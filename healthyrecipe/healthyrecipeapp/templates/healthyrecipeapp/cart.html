@@ -5,7 +5,8 @@
   {% for recipe in user_meal %}
     <li class="collection-item">{{recipe}}
         <form action="/cart" method="get">
-         <input type="submit" class="btn" value={{ forloop.counter }} name="mybtn">
+         <label>Click to delete recipe </label>
+         <input type="submit" value={{ forloop.counter }} name="mybtn">
         </form>
     </li>
   {% endfor %}
