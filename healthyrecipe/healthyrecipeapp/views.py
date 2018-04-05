@@ -104,17 +104,19 @@ def sresult(request):
     # cursor.execute("SELECT DISTINCT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_recipe.name Like %s OR (healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id) GROUP BY healthyrecipeapp_recipe.prep_time", [key_word,okey_word])
     cursor.execute("(SELECT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.name Like %s) UNION (SELECT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id)", [key_word,okey_word])
     recipes = cursor.fetchall()
+    context = {
+        'recipes': recipes
+    }
+    #return render(request, 'healthyrecipeapp/sresult.html', context)
+    
     recipes = list(zip(*recipes))
     names = []
     for i in range (0,len(recipes[0])):
         names.append((recipes[0][i]))
     names = tuple(names)
-    # return HttpResponse(names)
     
-    context = {
-        'recipes': names
-    }
     recipe_ids = recipes[1]
+     
 
     button = request.GET.get('mybtn')
     if(button):
@@ -189,7 +191,13 @@ def signup(request):
     else:
         form = SignupForm()
     return render(request, 'healthyrecipeapp/signup.html', {'form': form})
-
+    
+    
+def recipe_detail(request, id=id):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id = %s", [id])
+    recipe = cursor.fetchall()
+    return render(request, 'healthyrecipeapp/show.html', {'recipes': recipe})
 
 
 

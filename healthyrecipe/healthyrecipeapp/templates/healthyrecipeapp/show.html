@@ -1,0 +1,15 @@
+{% extends 'healthyrecipeapp/layout.html' %}
+
+{% block content %}
+
+{% for recipe in recipes %}
+    <li><strong>ID: </strong>{{recipe.0}}</li>
+    <li class="testcss"><strong>Name: </strong>{{recipe.1}}</li>
+    <li><strong>Calorie: </strong>{{recipe.2}}</li>
+    <li class="testcss"><strong>Preparation Time(in minutes): </strong>{{recipe.3}}</li>
+    <li><strong>Directions: </strong>{{recipe.4}}</li>
+    <img src={{recipe.5}} alt="Recipe ImageURL">
+{% endfor %}
+
+
+{% endblock %}
