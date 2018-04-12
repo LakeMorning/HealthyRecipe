@@ -104,6 +104,10 @@ def sresult(request):
     # cursor.execute("SELECT DISTINCT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_recipe.name Like %s OR (healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id) GROUP BY healthyrecipeapp_recipe.prep_time", [key_word,okey_word])
     cursor.execute("(SELECT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.name Like %s) UNION (SELECT healthyrecipeapp_recipe.name, healthyrecipeapp_recipe.id FROM healthyrecipeapp_ingredient,healthyrecipeapp_recipe,healthyrecipeapp_quantity WHERE healthyrecipeapp_ingredient.name = %s AND healthyrecipeapp_quantity.recipe_id = healthyrecipeapp_recipe.id AND healthyrecipeapp_quantity.ingredient_id = healthyrecipeapp_ingredient.id)", [key_word,okey_word])
     recipes = cursor.fetchall()
+    
+    if(len(recipes) == 0):
+        return HttpResponse("Oops...No corresponding food. We'll try to add it later!")
+    
     context = {
         'recipes': recipes
     }
@@ -197,7 +201,42 @@ def recipe_detail(request, id=id):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id = %s", [id])
     recipe = cursor.fetchall()
-    return render(request, 'healthyrecipeapp/show.html', {'recipes': recipe})
+    
+    cursor.execute("SELECT healthyrecipeapp_review.rating, healthyrecipeapp_review.content FROM healthyrecipeapp_review WHERE healthyrecipeapp_review.recipe_id = %s", [id])
+    comments = cursor.fetchall()
+    
+    context = {
+        'recipes': recipe,
+        'comments': comments
+    }
+    
+    return render(request, 'healthyrecipeapp/show.html', context)
+
+def new_comment(request, id=id):
+    # return HttpResponse('new comment...')
+    
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id = %s", [id])
+    recipe = cursor.fetchall()
+    return render(request, 'healthyrecipeapp/comment.html', {'recipe': recipe})
+
+def comment_detail(request, id=id):
+    if request.method == 'POST':
+        rating = int(request.POST.get('rating'))
+        content = request.POST.get('content')
+        
+        user_name = request.user.username
+        # return HttpResponse(user_name)
+        cursor = connection.cursor()
+        cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
+        user_id = cursor.fetchall()[0][0]
+        if(user_id is None):
+            return HttpResponse('not logged in')
+            
+        recipe_id = id;
+        
+        cursor.execute("INSERT INTO healthyrecipeapp_review(user_id, recipe_id, rating, content) VALUES(%s,%s,%s,%s)",[user_id,recipe_id,rating,content])
+        return redirect('http://healthyrecipe.web.engr.illinois.edu:8001/recipes/' + str(recipe_id))
 
 
 

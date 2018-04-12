@@ -11,4 +11,6 @@ urlpatterns = [
     path('login', auth_views.login, name='login'),
     path('logout', auth_views.logout, {'next_page': '/'}, name='logout'),
     path('recipes/<int:id>', views.recipe_detail, name='recipe_detail'),
+    path('recipes/<int:id>/comments/new', views.new_comment, name='new_comment'),
+    path('recipes/<int:id>/comments', views.comment_detail, name='comment_detail'),
 ]

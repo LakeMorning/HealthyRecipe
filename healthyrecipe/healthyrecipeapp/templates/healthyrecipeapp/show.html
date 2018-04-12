@@ -3,13 +3,27 @@
 {% block content %}
 
 {% for recipe in recipes %}
-    <li><strong>ID: </strong>{{recipe.0}}</li>
+    <!--<li><strong>ID: </strong>{{recipe.0}}</li>-->
     <li class="testcss"><strong>Name: </strong>{{recipe.1}}</li>
     <li><strong>Calorie: </strong>{{recipe.2}}</li>
     <li class="testcss"><strong>Preparation Time(in minutes): </strong>{{recipe.3}}</li>
     <li><strong>Directions: </strong>{{recipe.4}}</li>
     <img src={{recipe.5}} alt="Recipe ImageURL">
 {% endfor %}
+
+<h4>{{request.user.username}}</h4>
+<h5>{{recipes.0.0}}</h5>
+
+<p>
+  <a class="btn btn-success btn-xs" href="/recipes/{{recipes.0.0}}/comments/new">Add New Comment</a>
+</p>
+
+<p>
+  {% for comment in comments %}
+    <li class="collection-item">score: {{comment.0}}  content: {{comment.1}}</li>
+  {% endfor %}
+</p>
+
 
 
 {% endblock %}
