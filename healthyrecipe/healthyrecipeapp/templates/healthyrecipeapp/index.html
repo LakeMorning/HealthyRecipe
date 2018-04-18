@@ -1,24 +1,43 @@
 {% extends 'healthyrecipeapp/layout.html' %}
 
 {% block content %}
-<h5 id="demo" class ='testcss' onclick="foo()">Let's see if CSS and Javascript work...</h5>
-<form action="" method="get">
-    <input type="submit" class="btn" value="go to cart" name="cart">
-</form>
+<!--<h5 id="demo" class ='testcss' onclick="foo()">Let's see if CSS and Javascript work...</h5>-->
+<h1 class="text-center">Welcom to Healthy recipe</h1>
+<br>
 
-<form action="" method="get">
-    <input type="submit" class="btn" value="Profile" name="profile">
-</form>
+<div class="container">
+    <div class="col-md-4 col-md-offset-4">
+        <form action="" method="get">
+            <p>
+                <input type="text" name = "search_box">
+                <input type="submit" class="btn btn-primary" value="Search"/>
+            </p>
+        </form>
+    </div>
+    
+    <div class="col-md-4 col-md-offset-4">
+        <form action="" method="get">
+            <p>
+                <input type="submit" class="btn btn-danger" value="Profile" name="profile">
+            </p>
+        </form>
+    </div>
+    
+    <div class="col-md-4 col-md-offset-4">
+        <form action="" method="get">
+            <p>
+                <input type="submit" class="btn btn-success" value="Cart" name="cart">
+            </p>
+        </form>
+    </div>
+</div>
 
-<form action="" method="get">
-  <input type="text" name = "search_box">
-  <input type="submit" value="Search"/>
-</form>
-<h5 class="center-align blue lighten-3">Signed in as: {{request.user.username}}</h5>
 
-<ul class="collection">
-  {% for recipe in recipes %}
-    <li class="collection-item">{{recipe}}</li>
-  {% endfor %}
-</ul>
+<!--<ul class="collection">-->
+<!--  {% for recipe in recipes %}-->
+<!--    <li><strong>Name: </strong>{{recipe.1}}</li>-->
+<!--    <img src={{recipe.5}} alt="Recipe ImageURL">-->
+<!--    <br>-->
+<!--    {% endfor %}-->
+<!--</ul>-->
 {% endblock %}

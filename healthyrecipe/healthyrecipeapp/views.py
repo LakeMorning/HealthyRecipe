@@ -33,21 +33,22 @@ def index(request):
     # delete
     
     # update
-    cursor.execute("UPDATE healthyrecipeapp_user SET height = 175 WHERE userName = 'chongluhehe'")
+    # cursor.execute("UPDATE healthyrecipeapp_user SET height = 175 WHERE userName = 'chongluhehe'")
     
-    context = {
-        'title': 'Test Jinja Template',
-        'recipes': recipes
-    }
+    # context = {
+    #     # 'title': 'Test Jinja Template',
+    #     'recipes': recipes
+    # }
     
-    return render(request, 'healthyrecipeapp/index.html', context)
+    return render(request, 'healthyrecipeapp/index.html', {'recipes': recipes})
     
 def cart(request):
     cursor = connection.cursor()
     user_name = request.user.username
     # return HttpResponse(user_name)
     if(user_name is ''):
-        return HttpResponse('not logged in')
+        # return HttpResponse('not logged in')
+        return redirect('http://healthyrecipe.web.engr.illinois.edu:8001')
         
     # user_id = user_id[0][0]
     cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
@@ -57,7 +58,8 @@ def cart(request):
     cursor.execute("SELECT * FROM healthyrecipeapp_recipe WHERE healthyrecipeapp_recipe.id IN (SELECT healthyrecipeapp_meal.recipe_id FROM healthyrecipeapp_meal WHERE user_id = %s)", [user_id] )
     user_meal = cursor.fetchall()
     if(len(user_meal) == 0):
-        return HttpResponse('Empty cart! Please begin selecting your meals!')
+        return HttpResponse('Empty cart - You have not selected any dishes!')
+        
     cursor.execute("SELECT SUM(calorie) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
     total_calorie = cursor.fetchall()[0][0]
     cursor.execute("SELECT SUM(prep_time) FROM healthyrecipeapp_meal,healthyrecipeapp_recipe WHERE user_id = %s AND recipe_id = healthyrecipeapp_recipe.id",[user_id])
@@ -75,7 +77,7 @@ def cart(request):
         # return HttpResponse(recipe_ids)
         ind = int(button)
         if(user_id is None):
-            return HttpResponse('not logged in')
+            return redirect('http://healthyrecipe.web.engr.illinois.edu:8001')
         recipe_id = recipe_ids[ind - 1]
         # return HttpResponse(user_id)
         
@@ -131,7 +133,7 @@ def sresult(request):
         cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
         user_id = cursor.fetchall()[0][0]
         if(user_id is None):
-            return HttpResponse('not logged in')
+            return redirect('http://healthyrecipe.web.engr.illinois.edu:8001')
         recipe_id = recipe_ids[ind - 1]
         # return HttpResponse(user_id)
         cursor.execute("INSERT INTO healthyrecipeapp_meal(user_id, recipe_id) VALUES(%s,%s)",[user_id,recipe_id])
@@ -145,6 +147,10 @@ def sresult(request):
 def profile(request):
     cursor = connection.cursor()
     user_name = request.user.username
+    
+    if(user_name is ''):
+        return redirect('http://healthyrecipe.web.engr.illinois.edu:8001')
+    
     cursor.execute("SELECT healthyrecipeapp_user.height FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
     height = cursor.fetchall()[0][0]
     cursor.execute("SELECT healthyrecipeapp_user.weight FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
@@ -160,10 +166,10 @@ def profile(request):
         'exerciseFreq': exerciseFreq
     }
 
-    key_word = request.GET.get('updateWeight', None)
-    if(key_word):
-        newWeight = int(key_word)
-        cursor.execute("UPDATE healthyrecipeapp_user SET healthyrecipeapp_user.weight = %s WHERE healthyrecipeapp_user.userName = %s",[newWeight, user_name])
+    # key_word = request.GET.get('updateWeight', None)
+    # if(key_word):
+    #     newWeight = int(key_word)
+    #     cursor.execute("UPDATE healthyrecipeapp_user SET healthyrecipeapp_user.weight = %s WHERE healthyrecipeapp_user.userName = %s",[newWeight, user_name])
     return render(request, 'healthyrecipeapp/profile.html', context)
 
 def signup(request):
@@ -189,7 +195,8 @@ def signup(request):
             cursor = connection.cursor()
             cursor.execute("INSERT INTO healthyrecipeapp_user(userName, password, height, weight, age, gender, exerciseFreq) VALUES(%s, %s, %s, %s, %s, %s, %s)", [userName, raw_password, height, weight, age, gender, exerciseFreq])
             
-            return HttpResponse('Signup successful')
+            # return HttpResponse('Signup successful')
+            return render(request, 'healthyrecipeapp/index.html')
         else:
             return HttpResponse('Signup failed')
     else:
@@ -231,7 +238,7 @@ def comment_detail(request, id=id):
         cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
         user_id = cursor.fetchall()[0][0]
         if(user_id is None):
-            return HttpResponse('not logged in')
+            return redirect('http://healthyrecipe.web.engr.illinois.edu:8001')
             
         recipe_id = id;
         

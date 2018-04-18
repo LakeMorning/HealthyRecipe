@@ -4,23 +4,41 @@
 
 {% for recipe in recipes %}
     <!--<li><strong>ID: </strong>{{recipe.0}}</li>-->
-    <li class="testcss"><strong>Name: </strong>{{recipe.1}}</li>
-    <li><strong>Calorie: </strong>{{recipe.2}}</li>
-    <li class="testcss"><strong>Preparation Time(in minutes): </strong>{{recipe.3}}</li>
-    <li><strong>Directions: </strong>{{recipe.4}}</li>
-    <img src={{recipe.5}} alt="Recipe ImageURL">
+    <p>
+        <li><strong>Name: </strong>{{recipe.1}}</li>
+    </p>
+    
+    <p>
+        <li><strong>Calorie: </strong>{{recipe.2}}</li>
+    </p>
+    
+    <p>
+        <li><strong>Preparation Time(in minutes): </strong>{{recipe.3}}</li>
+    </p>
+    
+    <p>
+        <li><strong>Directions: </strong>{{recipe.4}}</li>
+    </p>
+    
+    <p>
+        <img src={{recipe.5}} alt="Recipe ImageURL">
+    </p>
 {% endfor %}
 
-<h4>{{request.user.username}}</h4>
-<h5>{{recipes.0.0}}</h5>
+<!--<h4>{{request.user.username}}</h4>-->
+<!--<h5>{{recipes.0.0}}</h5>-->
 
 <p>
-  <a class="btn btn-success btn-xs" href="/recipes/{{recipes.0.0}}/comments/new">Add New Comment</a>
+  <a class="btn btn-warning" href="/recipes/{{recipes.0.0}}/comments/new">Add New Comment</a>
 </p>
 
 <p>
   {% for comment in comments %}
-    <li class="collection-item">score: {{comment.0}}  content: {{comment.1}}</li>
+  <li>
+        <em style="color:red;">Score</em>: {{comment.0}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <em style="color:blue;">Content</em>: {{comment.1}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <em style="color:green;">By user</em>: {{request.user.username}}
+  </li>
   {% endfor %}
 </p>
 

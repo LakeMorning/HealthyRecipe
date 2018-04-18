@@ -1,16 +1,23 @@
 {% extends 'healthyrecipeapp/layout.html' %}
 
 {% block content %}
+
+<p>
+    <h4>Total calorie of current meal is: <strong style="color:red;">{{total_calorie}}</strong></h4>
+    <h4>Total prepare time for current meal is: <strong style="color:red;">{{total_prep_time}}</strong></h4>
+    <br>
+<p>
+
 <ul class="collection">
   {% for recipe in user_meal %}
-    <li class="collection-item">{{recipe}}
+  <p>
+      <li>{{recipe.1}}
         <form action="/cart" method="get">
          <label>Click to delete recipe </label>
          <input type="submit" value={{ forloop.counter }} name="mybtn">
         </form>
     </li>
+  </p>
   {% endfor %}
 </ul>
-<h5>total calorie is: {{total_calorie}}</h5>
-<h5>total prepare time is: {{total_prep_time}}</h5>
 {% endblock %}

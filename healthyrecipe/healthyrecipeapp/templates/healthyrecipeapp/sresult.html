@@ -3,12 +3,14 @@
 {% block content %}
 <ul class="collection">
   {% for recipe in recipes %}
-    <li class="collection-item"><a href="/recipes/{{ recipe.1 }}">{{recipe.0}} {{recipe.1}}</a>
-    <form action="/sresult" method="get">
-     <label>Click to add recipe </label>
-     <input type="submit" value={{ forloop.counter }} name="mybtn">
-    </form>
-    </li>
+    <p>
+      <li class="collection-item"><a href="/recipes/{{ recipe.1 }}">{{recipe.0}}</a>
+        <form action="/sresult" method="get">
+         <label>Click to add recipe </label>
+         <input type="submit" value={{ forloop.counter }} name="mybtn">
+        </form>
+      </li>
+    </p>
   {% endfor %}
 </ul>
 {% endblock %}
