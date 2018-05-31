@@ -84,7 +84,11 @@ def cart(request):
     
     Q = np.load('Q_matrix.npy')
     P = np.load('P_matrix.npy')
-    all_scores = np.dot(Q[user_id - 1,:],P)
+    if user_id > 120:
+        new_id = user_id % 120
+    else:
+        new_id = user_id
+    all_scores = np.dot(Q[new_id - 1,:],P)
     # recommendation = all_scores.argsort()[-5:][::-1]
     cursor.execute("SELECT height, weight, age FROM healthyrecipeapp_user WHERE id = %s", [user_id])
     user_info = cursor.fetchall()
@@ -253,17 +257,23 @@ def sresult(request):
     
     
     #ranking
-    cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[request.user.username])
+    user_name = request.user.username
+    if(user_name is ''):
+        return HttpResponse('not logged in')
+        # return redirect('http://healthyrecipe.web.engr.illinois.edu:8001')
+    cursor.execute("SELECT healthyrecipeapp_user.id FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
     user_id = cursor.fetchall()[0][0]
     
     cursor.execute("SELECT healthyrecipeapp_review.user_id, healthyrecipeapp_review.recipe_id, healthyrecipeapp_review.rating FROM healthyrecipeapp_review, healthyrecipeapp_user WHERE healthyrecipeapp_review.user_id = healthyrecipeapp_user.id")
     my_matrix = cursor.fetchall()
+    cursor.execute("SELECT COUNT(id) FROM healthyrecipeapp_user")
+    num_user = cursor.fetchall()[0][0]
     lists = np.asarray(my_matrix,dtype = np.int32)
-    sparse = np.zeros((120, 100), dtype=np.int32)
+    sparse = np.zeros((num_user, 100), dtype=np.int32)
     for t in lists:
         sparse[t[0]-1,t[1]-1] = t[2]
-        
-    ranking = user_based(sparse, user_id-1)
+    
+    ranking = user_based(sparse, user_id - 1)
     
     scores = []
     
@@ -341,10 +351,20 @@ def profile(request):
         'exerciseFreq': exerciseFreq
     }
 
-    # key_word = request.GET.get('updateWeight', None)
-    # if(key_word):
-    #     newWeight = int(key_word)
-    #     cursor.execute("UPDATE healthyrecipeapp_user SET healthyrecipeapp_user.weight = %s WHERE healthyrecipeapp_user.userName = %s",[newWeight, user_name])
+    key_word = request.GET.get('updateWeight', None)
+    if(key_word):
+        newWeight = int(key_word)
+        cursor.execute("UPDATE healthyrecipeapp_user SET healthyrecipeapp_user.weight = %s WHERE healthyrecipeapp_user.userName = %s",[newWeight, user_name])
+        cursor.execute("SELECT healthyrecipeapp_user.weight FROM healthyrecipeapp_user WHERE healthyrecipeapp_user.userName = %s",[user_name])
+        weight = cursor.fetchall()[0][0]
+    
+    context = {
+        'height': height,
+        'weight': weight,
+        'age': age,
+        'exerciseFreq': exerciseFreq
+    }
+        
     return render(request, 'healthyrecipeapp/profile.html', context)
 
 def signup(request):
